@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>'t Lijstje</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
+      overflow-y: auto;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem 1rem;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: orange;
+      margin-bottom: 2rem;
+    }
+
+    input, button {
+      width: 100%;
+      display: block;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    input {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    button {
+      padding: 1rem;
+      font-weight: bold;
+      background-color: orange;
+      color: black;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 2rem;
+    }
+
+    button:hover {
+      background-color: #ffb347;
+    }
+
+    .output {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .session-block {
+      background-color: #111;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      border: 2px dashed #444;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+
+    .session-block h2 {
+      margin-top: 0;
+      color: orange;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>'t Lijstje</h1>
+    <input type="number" id="prInput" placeholder="Enter your 1RM (kg)" />
+    <button id="generateBtn">Generate Full Plan</button>
+    <div id="planOutput" class="output"></div>
+  </div>
+
+  <script>
+    const button = document.getElementById("generateBtn");
+    const input = document.getElementById("prInput");
+    const output = document.getElementById("planOutput");
+
+    const plan = [
+      [["Barbell Bench Press", [50, 2, 15], [80, 4, 8], [70, 2, 8]],
+       ["Close Grip Bench", [60, 3, "Till Failure"]],
+       ["Cable Flys", ["Moderate", 3, 12]],
+       ["Tricep Pushdown", ["Moderate", 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [85, 5, 2], [80, 3, 3]],
+       ["Close Grip Pin Press", [60, 3, "Till Failure"]],
+       ["Tricep Pushdown", ["Heavy", 4, 8]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [80, 4, 8], [75, 2, 8]],
+       ["Close Grip Bench", [60, 3, "Till Failure"]],
+       ["Cable Flys", ["Moderate", 3, 12]],
+       ["Tricep Pushdown", ["Moderate", 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [85, 5, 3], [75, 3, 6]],
+       ["Close Grip Pin Press", [65, 3, "Till Failure"]],
+       ["Tricep Pushdown", ["Heavy", 4, 8]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [85, 4, 5], [75, 2, 8]],
+       ["Close Grip Bench", [65, 3, "Till Failure"]],
+       ["Cable Flys", ["Moderate", 3, 12]],
+       ["Tricep Pushdown", ["Moderate", 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [90, 4, 2], [75, 2, 9]],
+       ["Close Grip Pin Press", [70, 3, "Till Failure"]],
+       ["Tricep Pushdown", ["Heavy", 4, 8]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [75, 3, 10], ["75%", 2, "5s down / 3s up"]],
+       ["Close Grip Bench", [70, 2, 10]],
+       ["Cable Flys", ["Moderate", 3, 12]],
+       ["Tricep Pushdown", ["Moderate", 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [90, 4, 2], [85, 3, 3]],
+       ["Pin Press", [70, 3, "Till Failure"]],
+       ["Tricep Pushdown", ["Heavy", 4, 10]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [85, 4, 6], ["75%", 2, "5s down / 3s up"]],
+       ["Close Grip Bench", [75, 3, "Till Failure"]],
+       ["Cable Flys", ["Moderate", 3, 15]],
+       ["Tricep Pushdown", ["Moderate", 3, 15]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [92.5, 4, 1], [90, 2, 2], [85, 2, 4]],
+       ["Pin Press", [75, 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [90, 5, 2]],
+       ["Close Grip Bench", [70, 2, 10]],
+       ["Cable Flys", ["Moderate", 3, 12]]],
+
+      [["Barbell Bench Press", [50, 2, 15], [70, 1, 3], [80, 1, 2], [90, 1, 1], [105, 1, 1], [110, 1, 1]],
+       ["Barbell Bench Press", [95, 2, 1]]]
+    ];
+
+    button.addEventListener("click", () => {
+      const pr = parseFloat(input.value);
+      if (isNaN(pr) || pr <= 0) {
+        output.innerHTML = "<div class='session-block'>Please enter a valid PR (positive number)</div>";
+        return;
+      }
+
+      output.innerHTML = "";
+
+      for (let week = 0; week < 6; week++) {
+        for (let session = 0; session < 2; session++) {
+          const sessionDiv = document.createElement("div");
+          sessionDiv.className = "session-block";
+
+          const title = document.createElement("h2");
+          title.textContent = `Week ${week + 1} - Session ${session + 1}`;
+          sessionDiv.appendChild(title);
+
+          const sessionPlan = plan[week * 2 + session];
+          sessionPlan.forEach(ex => {
+            const name = ex[0];
+            const sets = ex.slice(1).map(item => {
+              const isRepsText = isNaN(item[2]);
+              const reps = isRepsText ? `${item[1]}x ${item[2]}` : `${item[1]}x ${item[2]} reps`;
+
+              if (typeof item[0] === "number") {
+                return `${reps} @ ${Math.round(pr * (item[0] / 100))}kg (${item[0]}%)`;
+              } else if (typeof item[0] === "string" && item[0].includes("%")) {
+                const pct = parseFloat(item[0]);
+                return `${reps} @ ${Math.round(pr * (pct / 100))}kg (${item[0]})`;
+              } else {
+                return `${reps} @ ${item[0]}`;
+              }
+            }).join("\n");
+
+            const exBlock = document.createElement("pre");
+            exBlock.textContent = `- ${name}\n${sets}`;
+            sessionDiv.appendChild(exBlock);
+          });
+
+          output.appendChild(sessionDiv);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
