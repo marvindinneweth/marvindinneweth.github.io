@@ -84,6 +84,16 @@
       font-size: 1.1rem;
       margin-bottom: 0.5rem;
     }
+
+    .back-button {
+      background-color: #444;
+      color: white;
+      margin-top: 1.5rem;
+    }
+
+    .back-button:hover {
+      background-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -92,12 +102,14 @@
     <input type="number" id="prInput" placeholder="Enter your 1RM (kg)" />
     <button id="generateBtn">Generate Full Plan</button>
     <div id="planOutput" class="output"></div>
+    <button class="back-button" id="backBtn">Back to Home</button>
   </div>
 
   <script>
     const button = document.getElementById("generateBtn");
     const input = document.getElementById("prInput");
     const output = document.getElementById("planOutput");
+    const backBtn = document.getElementById("backBtn");
 
     const plan = [
       [["Barbell Bench Press", [50, 2, 15], [80, 4, 8], [70, 2, 8]],
@@ -195,6 +207,10 @@
           output.appendChild(sessionDiv);
         }
       }
+    });
+
+    backBtn.addEventListener("click", () => {
+      window.location.href = "index.html";
     });
   </script>
 </body>

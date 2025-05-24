@@ -75,6 +75,16 @@
       height: 180px;
       resize: none;
     }
+
+    .back-button {
+      background-color: #444;
+      color: white;
+      margin-top: 1.5rem;
+    }
+
+    .back-button:hover {
+      background-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -83,12 +93,14 @@
     <input type="number" id="prInput" placeholder="Enter your PR (kg)" />
     <button id="generateBtn">Generate Workout</button>
     <textarea id="outputArea" readonly placeholder="Your workout will appear here..."></textarea>
+    <button class="back-button" id="backBtn">Back to Home</button>
   </div>
 
   <script>
     const button = document.getElementById("generateBtn");
     const input = document.getElementById("prInput");
     const area = document.getElementById("outputArea");
+    const backBtn = document.getElementById("backBtn");
 
     button.addEventListener("click", () => {
       const pr = parseFloat(input.value);
@@ -109,6 +121,10 @@
         `3x 3x ${list_3} kg\n` +
         `2x 2x ${list_4} kg\n` +
         `2x 1x ${list_5} kg`;
+    });
+
+    backBtn.addEventListener("click", () => {
+      window.location.href = "index.html";
     });
   </script>
 </body>
