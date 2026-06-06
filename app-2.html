@@ -3,109 +3,532 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VULTURE CULTURE LIST</title>
+  <title>Vulture Tools</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #000;
-      color: #fff;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --panel: #111;
+      --panel-2: #171717;
+      --line: #2d2d2d;
+      --muted: #9b9b9b;
+      --text: #f7f7f7;
+      --brand: #ff9f1a;
+      --brand-soft: #ffd08a;
+      --danger: #f05d5e;
     }
 
-    *, *::before, *::after {
+    * {
       box-sizing: border-box;
     }
 
-    .container {
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
       width: 100%;
-      max-width: 480px;
-      padding: 2rem 1rem;
+      max-width: 520px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .back-link {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #0c0c0c;
+      line-height: 1;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
     }
 
     h1 {
-      text-align: center;
-      color: orange;
-      margin-bottom: 2rem;
+      color: var(--brand);
+      font-size: 1.35rem;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      color: var(--brand-soft);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tab {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #151515;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .tab.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #111;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 7px;
     }
 
     input,
-    button,
     textarea {
       width: 100%;
-      display: block;
-      box-sizing: border-box;
-      font-size: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #070707;
+      color: var(--text);
+      padding: 10px 12px;
     }
 
     input {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      margin-bottom: 1rem;
-      text-align: center;
+      min-height: 48px;
+      margin-bottom: 10px;
     }
 
-    button {
-      padding: 1rem;
-      font-weight: bold;
-      background-color: orange;
-      color: black;
-      border: none;
-      border-radius: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-bottom: 1rem;
-    }
-
-    button:hover {
-      background-color: #ffb347;
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
     textarea {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      border: 2px dashed #444;
-      background-color: #111;
-      color: #fff;
-      height: 180px;
-      resize: none;
+      min-height: 185px;
+      resize: vertical;
+      line-height: 1.45;
     }
 
-    .back-button {
-      background-color: #444;
-      color: white;
-      margin-top: 1.5rem;
+    .primary {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      background: var(--brand);
+      color: #111;
+      margin-bottom: 10px;
     }
 
-    .back-button:hover {
-      background-color: #666;
+    .history-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-item {
+      display: grid;
+      gap: 5px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .history-item strong {
+      color: var(--brand-soft);
+    }
+
+    .history-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .history-heading strong {
+      min-width: 0;
+    }
+
+    .history-item span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .history-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0;
+    }
+
+    .small-button {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #222;
+      color: var(--text);
+      font-weight: 700;
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      flex: 0 0 auto;
+    }
+
+    .small-button.danger {
+      background: transparent;
+      border-color: rgba(240, 93, 94, 0.55);
+      color: var(--danger);
+    }
+
+    .confirm-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+
+    .confirm-row span {
+      margin-right: auto;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 380px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>VULTURE CULTURE LIST</h1>
-    <input type="number" id="prInput" placeholder="Enter your PR (kg)" />
-    <button id="generateBtn">Generate Workout</button>
-    <textarea id="outputArea" readonly placeholder="Your workout will appear here..."></textarea>
-    <button class="back-button" id="backBtn">Back to Home</button>
-  </div>
+  <main class="app">
+    <header class="topbar">
+      <a class="back-link" href="index.html">Home</a>
+      <h1>Tools</h1>
+      <a class="back-link" href="app-1.html">Gym Reaper</a>
+    </header>
+
+    <nav class="tabs" aria-label="Tools">
+      <button id="overviewTab" class="tab active" type="button">Overview</button>
+      <button id="lijstjeTab" class="tab" type="button">Lijstje</button>
+    </nav>
+
+    <section id="overviewPanel" class="stack">
+      <div class="panel">
+        <h2>Add PR</h2>
+        <div class="form-grid">
+          <div>
+            <label for="recordPr">Bench PR (kg)</label>
+            <input id="recordPr" type="number" min="1" step="0.5" inputmode="decimal" placeholder="100" />
+          </div>
+          <div>
+            <label for="recordDate">PR date</label>
+            <input id="recordDate" type="date" />
+          </div>
+        </div>
+        <button id="recordPrBtn" class="primary">Add PR Record</button>
+        <p id="recordMessage" class="muted"></p>
+      </div>
+
+      <div class="panel">
+        <h2>PR Overview</h2>
+        <div id="prHistory" class="history-list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>List Archive</h2>
+        <div id="cycleArchive" class="history-list"></div>
+      </div>
+    </section>
+
+    <section id="lijstjePanel" class="stack hidden">
+      <div class="panel">
+        <h2>'t Lijstje</h2>
+        <p class="muted" style="margin-bottom: 14px;">The old quick calculator is still here when you need it.</p>
+        <label for="prInput">Bench PR (kg)</label>
+        <input type="number" id="prInput" min="1" step="0.5" inputmode="decimal" placeholder="Enter your PR" />
+        <button id="generateBtn" class="primary">Generate Workout</button>
+        <textarea id="outputArea" readonly placeholder="Your workout will appear here..."></textarea>
+      </div>
+    </section>
+  </main>
 
   <script>
+    const STORAGE_KEY = "vcGymReaperState";
+    const lijstjeTab = document.getElementById("lijstjeTab");
+    const overviewTab = document.getElementById("overviewTab");
+    const lijstjePanel = document.getElementById("lijstjePanel");
+    const overviewPanel = document.getElementById("overviewPanel");
     const button = document.getElementById("generateBtn");
     const input = document.getElementById("prInput");
     const area = document.getElementById("outputArea");
-    const backBtn = document.getElementById("backBtn");
+    const prHistory = document.getElementById("prHistory");
+    const cycleArchive = document.getElementById("cycleArchive");
+    const recordPr = document.getElementById("recordPr");
+    const recordDate = document.getElementById("recordDate");
+    const recordMessage = document.getElementById("recordMessage");
+
+    function loadState() {
+      try {
+        const state = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return normalizeState(state);
+      } catch {
+        return normalizeState(null);
+      }
+    }
+
+    function normalizeState(state) {
+      const activeCycles = Array.isArray(state?.activeCycles) ? state.activeCycles : [];
+      if (state?.activeCycle) {
+        activeCycles.unshift({
+          ...state.activeCycle,
+          name: state.activeCycle.name || "List"
+        });
+      }
+
+      return {
+        activeCycle: null,
+        activeCycles,
+        selectedCycleId: state?.selectedCycleId || activeCycles[0]?.id || null,
+        archives: Array.isArray(state?.archives) ? state.archives : [],
+        prHistory: Array.isArray(state?.prHistory) ? state.prHistory : []
+      };
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function today() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function uid() {
+      return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function normalizePr(value) {
+      const pr = parseFloat(value);
+      return Number.isFinite(pr) && pr > 0 ? pr : null;
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(`${value}T00:00:00`);
+      return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function showTab(name) {
+      const overview = name === "overview";
+      overviewPanel.classList.toggle("hidden", !overview);
+      lijstjePanel.classList.toggle("hidden", overview);
+      overviewTab.classList.toggle("active", overview);
+      lijstjeTab.classList.toggle("active", !overview);
+
+      if (overview) {
+        renderOverview();
+      }
+    }
+
+    function renderOverview() {
+      const state = loadState();
+      prHistory.innerHTML = "";
+      cycleArchive.innerHTML = "";
+      recordDate.value = recordDate.value || today();
+
+      if (state.prHistory.length === 0) {
+        prHistory.innerHTML = "<p class='muted'>No PR records yet. Add one above when you hit one.</p>";
+      } else {
+        state.prHistory.forEach((entry) => {
+          prHistory.appendChild(prHistoryItem(
+            entry,
+            `${entry.pr}kg`,
+            `PR date: ${formatDate(entry.date)}`,
+            `Recorded: ${formatDate(entry.recordedAt)}`
+          ));
+        });
+      }
+
+      if (state.archives.length === 0 && state.activeCycles.length === 0) {
+        cycleArchive.innerHTML = "<p class='muted'>No archived lists yet.</p>";
+      } else {
+        state.archives.forEach((cycle) => {
+          cycleArchive.appendChild(archiveHistoryItem(
+            cycle,
+            `${cycle.name || "List"} - ${cycle.status}`,
+            `${cycle.completedCount || cycle.completedSessions.length}/12 sessions done`,
+            `${cycle.pr}kg | Started: ${formatDate(cycle.startedAt)} | Archived: ${formatDate(cycle.archivedAt)}`
+          ));
+        });
+      }
+
+      state.activeCycles.forEach((cycle) => {
+        cycleArchive.appendChild(historyItem(
+          `${cycle.name || "List"} - active`,
+          `${cycle.currentSessionIndex}/12 sessions done at ${cycle.pr}kg`,
+          `Started: ${formatDate(cycle.startedAt)}`
+        ));
+      });
+    }
+
+    function historyItem(title, lineOne, lineTwo) {
+      const item = document.createElement("article");
+      item.className = "history-item";
+
+      const strong = document.createElement("strong");
+      strong.textContent = title;
+
+      const first = document.createElement("span");
+      first.textContent = lineOne;
+
+      const second = document.createElement("span");
+      second.textContent = lineTwo;
+
+      item.append(strong, first, second);
+      return item;
+    }
+
+    function prHistoryItem(entry, title, lineOne, lineTwo) {
+      return deletableHistoryItem(title, lineOne, lineTwo, () => deletePrRecord(entry.id));
+    }
+
+    function archiveHistoryItem(entry, title, lineOne, lineTwo) {
+      return deletableHistoryItem(title, lineOne, lineTwo, () => deleteArchiveRecord(entry.id));
+    }
+
+    function deletableHistoryItem(title, lineOne, lineTwo, onDelete) {
+      const item = document.createElement("article");
+      item.className = "history-item";
+
+      const heading = document.createElement("div");
+      heading.className = "history-heading";
+
+      const strong = document.createElement("strong");
+      strong.textContent = title;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "small-button danger";
+      deleteButton.type = "button";
+      deleteButton.textContent = "Delete";
+
+      heading.append(strong, deleteButton);
+      item.appendChild(heading);
+
+      const first = document.createElement("span");
+      first.textContent = lineOne;
+
+      const second = document.createElement("span");
+      second.textContent = lineTwo;
+
+      item.append(first, second);
+
+      deleteButton.addEventListener("click", () => {
+        if (item.querySelector(".confirm-row")) return;
+
+        const actions = document.createElement("div");
+        actions.className = "confirm-row";
+        const message = document.createElement("span");
+        message.textContent = "Are you sure?";
+
+        const yesButton = document.createElement("button");
+        yesButton.className = "small-button danger";
+        yesButton.type = "button";
+        yesButton.textContent = "Yes";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.className = "small-button";
+        cancelButton.type = "button";
+        cancelButton.textContent = "Cancel";
+
+        yesButton.addEventListener("click", onDelete);
+        cancelButton.addEventListener("click", renderOverview);
+
+        actions.append(message, yesButton, cancelButton);
+        item.appendChild(actions);
+        deleteButton.classList.add("hidden");
+      });
+
+      return item;
+    }
+
+    function deletePrRecord(id) {
+      const state = loadState();
+      state.prHistory = state.prHistory.filter((entry) => entry.id !== id);
+      saveState(state);
+      recordMessage.textContent = "PR record deleted.";
+      renderOverview();
+    }
+
+    function deleteArchiveRecord(id) {
+      const state = loadState();
+      state.archives = state.archives.filter((entry) => entry.id !== id);
+      saveState(state);
+      recordMessage.textContent = "List archive entry deleted.";
+      renderOverview();
+    }
 
     button.addEventListener("click", () => {
       const pr = parseFloat(input.value);
       if (isNaN(pr) || pr <= 0) {
-        area.value = "Please enter a valid PR (positive number)";
+        area.value = "Please enter a valid PR.";
         return;
       }
 
@@ -116,16 +539,40 @@
       const list_5 = Math.round(pr * 0.95);
 
       area.value =
-        `1x 6x ${list_1} kg\n` +
-        `2x 5x ${list_2} kg\n` +
-        `3x 3x ${list_3} kg\n` +
-        `2x 2x ${list_4} kg\n` +
-        `2x 1x ${list_5} kg`;
+        `1 x 6 x ${list_1} kg\n` +
+        `2 x 5 x ${list_2} kg\n` +
+        `3 x 3 x ${list_3} kg\n` +
+        `2 x 2 x ${list_4} kg\n` +
+        `2 x 1 x ${list_5} kg`;
     });
 
-    backBtn.addEventListener("click", () => {
-      window.location.href = "index.html";
+    document.getElementById("recordPrBtn").addEventListener("click", () => {
+      const pr = normalizePr(recordPr.value);
+      if (!pr) {
+        recordMessage.textContent = "Enter a valid bench PR.";
+        return;
+      }
+
+      const state = loadState();
+      const selected = state.activeCycles.find((cycle) => cycle.id === state.selectedCycleId) || state.activeCycles[0] || null;
+      state.prHistory.unshift({
+        id: uid(),
+        cycleId: selected?.id || null,
+        pr,
+        date: recordDate.value || today(),
+        recordedAt: today()
+      });
+
+      saveState(state);
+      recordPr.value = "";
+      recordDate.value = today();
+      recordMessage.textContent = "PR record added.";
+      renderOverview();
     });
+
+    lijstjeTab.addEventListener("click", () => showTab("lijstje"));
+    overviewTab.addEventListener("click", () => showTab("overview"));
+    renderOverview();
   </script>
 </body>
 </html>

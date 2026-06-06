@@ -3,113 +3,507 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GYM REAPER PROGRAM</title>
+  <title>Gym Reaper Program</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #000;
-      color: #fff;
-      font-family: sans-serif;
-      overflow-y: auto;
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --panel: #111;
+      --panel-2: #171717;
+      --line: #2d2d2d;
+      --muted: #9b9b9b;
+      --text: #f7f7f7;
+      --brand: #ff9f1a;
+      --brand-soft: #ffd08a;
+      --danger: #f05d5e;
     }
 
-    *, *::before, *::after {
+    * {
       box-sizing: border-box;
     }
 
-    .container {
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      padding: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
       width: 100%;
-      max-width: 480px;
-      padding: 2rem 1rem;
+      max-width: 520px;
+      min-height: 100vh;
       margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .back-link,
+    .tool-link {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #0c0c0c;
+      line-height: 1;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
     }
 
     h1 {
-      text-align: center;
-      color: orange;
-      margin-bottom: 2rem;
+      color: var(--brand);
+      font-size: 1.35rem;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
 
-    input, button {
-      width: 100%;
+    h2 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .hero-panel {
+      background: linear-gradient(180deg, #151515, #0d0d0d);
+      border-color: #343434;
+    }
+
+    .session-panel {
+      background: linear-gradient(180deg, #161616, #0d0d0d);
+      border-color: #343434;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .meta {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      min-width: 0;
+    }
+
+    .meta span {
       display: block;
-      box-sizing: border-box;
-      font-size: 1rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      margin-bottom: 5px;
     }
 
-    input {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      margin-bottom: 1rem;
-      text-align: center;
+    .meta strong {
+      display: block;
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #070707;
+      color: var(--text);
+      padding: 10px 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .button-row.single {
+      grid-template-columns: 1fr;
+    }
+
+    details.panel {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    details.panel > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 14px;
+      color: var(--brand-soft);
+      font-weight: 700;
+    }
+
+    details.panel > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.panel > summary::after {
+      content: "+";
+      float: right;
+      color: var(--muted);
+    }
+
+    details.panel[open] > summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      border-top: 1px solid var(--line);
+      padding: 14px;
     }
 
     button {
-      padding: 1rem;
-      font-weight: bold;
-      background-color: orange;
-      color: black;
-      border: none;
-      border-radius: 1rem;
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 12px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-bottom: 2rem;
+      font-weight: 700;
     }
 
-    button:hover {
-      background-color: #ffb347;
+    .primary {
+      background: var(--brand);
+      color: #111;
     }
 
-    .output {
+    .secondary {
+      background: #2a2a2a;
+      color: var(--text);
+      border: 1px solid #444;
+    }
+
+    .danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(240, 93, 94, 0.55);
+    }
+
+    .session-title {
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    .session-block {
-      background-color: #111;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      border: 2px dashed #444;
+    .session-title span {
+      color: var(--brand-soft);
       font-size: 0.9rem;
-      white-space: pre-wrap;
+      white-space: nowrap;
     }
 
-    .session-block h2 {
-      margin-top: 0;
-      color: orange;
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
+    .session-kicker {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
     }
 
-    .back-button {
-      background-color: #444;
-      color: white;
-      margin-top: 1.5rem;
+    .session-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
     }
 
-    .back-button:hover {
-      background-color: #666;
+    .session-badges span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #0b0b0b;
+      color: var(--muted);
+      font-size: 0.82rem;
+      padding: 6px 9px;
+    }
+
+    .small-action {
+      min-height: 36px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background: #242424;
+      color: var(--text);
+      padding: 7px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .inline-editor {
+      display: grid;
+      gap: 10px;
+      margin: 10px 0 14px;
+      padding: 12px;
+      background: #0b0b0b;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .exercise-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .exercise {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .exercise strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--brand-soft);
+    }
+
+    .set-lines {
+      display: grid;
+      gap: 5px;
+      color: #e9e9e9;
+      font-size: 0.94rem;
+      line-height: 1.35;
+    }
+
+    .progress-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-item {
+      display: grid;
+      gap: 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .progress-item summary {
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .progress-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .progress-item.done {
+      color: var(--text);
+      border-color: rgba(255, 159, 26, 0.6);
+    }
+
+    .progress-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .progress-detail {
+      display: grid;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .progress-exercise {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .progress-exercise strong {
+      display: block;
+      color: var(--brand-soft);
+      margin-bottom: 4px;
+    }
+
+    .message {
+      min-height: 20px;
+      color: var(--brand-soft);
+      font-size: 0.92rem;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 380px) {
+      .form-grid,
+      .button-row,
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>GYM REAPER PROGRAM</h1>
-    <input type="number" id="prInput" placeholder="Enter your 1RM (kg)" />
-    <button id="generateBtn">Generate Full Plan</button>
-    <div id="planOutput" class="output"></div>
-    <button class="back-button" id="backBtn">Back to Home</button>
-  </div>
+  <main class="app">
+    <header class="topbar">
+      <a class="back-link" href="index.html">Home</a>
+      <h1>Gym Reaper</h1>
+      <a class="tool-link" href="app-2.html">Tools</a>
+    </header>
+
+    <section id="setupPanel" class="panel hero-panel hidden">
+      <h2>Start Bench List</h2>
+      <p class="muted">Create a new 6-week list from the PR you want to use.</p>
+      <div class="form-grid" style="margin-top: 14px;">
+        <div>
+          <label for="startName">List name</label>
+          <input id="startName" type="text" placeholder="Marvin" />
+        </div>
+        <div>
+          <label for="startPr">PR (kg)</label>
+          <input id="startPr" type="number" min="1" step="0.5" inputmode="decimal" placeholder="100" />
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="startDate">Start date</label>
+          <input id="startDate" type="date" />
+        </div>
+      </div>
+      <button id="startCycleBtn" class="primary">Start New List</button>
+      <p id="setupMessage" class="message"></p>
+    </section>
+
+    <section id="activePanel" class="stack hidden">
+      <section class="panel">
+        <div class="form-grid">
+          <div>
+            <label for="activeListSelect">Active list</label>
+            <select id="activeListSelect"></select>
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button id="showNewListBtn" class="secondary">New List</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="sessionPanel" class="panel session-panel">
+        <div class="session-kicker">
+          <div class="session-badges">
+            <span id="currentProgress">-</span>
+            <span id="currentPr">-</span>
+            <span id="currentPrDate">-</span>
+          </div>
+          <button id="editProgramToggle" class="small-action" type="button">Edit</button>
+        </div>
+        <div id="programEditor" class="inline-editor hidden">
+          <div class="form-grid">
+            <div>
+              <label for="editPr">PR (kg)</label>
+              <input id="editPr" type="number" min="1" step="0.5" inputmode="decimal" />
+            </div>
+            <div>
+              <label for="editDate">Start date</label>
+              <input id="editDate" type="date" />
+            </div>
+          </div>
+          <div class="button-row">
+            <button id="saveProgramBtn" class="primary">Save</button>
+            <button id="cancelProgramBtn" class="secondary">Cancel</button>
+          </div>
+          <p id="prMessage" class="message"></p>
+        </div>
+        <div class="session-title">
+          <h2 id="sessionHeading">Next Session</h2>
+          <span id="sessionCount">-</span>
+        </div>
+        <div id="exerciseList" class="exercise-list"></div>
+        <div class="button-row">
+          <button id="completeSessionBtn" class="primary">Session Done</button>
+          <button id="deleteCycleBtn" class="danger">Delete</button>
+        </div>
+        <div id="deleteConfirm" class="inline-editor hidden">
+          <p class="muted">Are you sure?</p>
+          <div class="button-row">
+            <button id="confirmDeleteBtn" class="danger">Yes</button>
+            <button id="cancelDeleteBtn" class="secondary">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <details class="panel">
+        <summary>Session dates</summary>
+        <div class="details-body">
+          <div id="progressList" class="progress-list"></div>
+        </div>
+      </details>
+    </section>
+  </main>
 
   <script>
-    const button = document.getElementById("generateBtn");
-    const input = document.getElementById("prInput");
-    const output = document.getElementById("planOutput");
-    const backBtn = document.getElementById("backBtn");
+    const STORAGE_KEY = "vcGymReaperState";
+    const TOTAL_SESSIONS = 12;
 
     const plan = [
       [["Barbell Bench Press", [50, 2, 15], [80, 4, 8], [70, 2, 8]],
@@ -164,54 +558,367 @@
        ["Barbell Bench Press", [95, 2, 1]]]
     ];
 
-    button.addEventListener("click", () => {
-      const pr = parseFloat(input.value);
-      if (isNaN(pr) || pr <= 0) {
-        output.innerHTML = "<div class='session-block'>Please enter a valid PR (positive number)</div>";
+    const setupPanel = document.getElementById("setupPanel");
+    const activePanel = document.getElementById("activePanel");
+    const startName = document.getElementById("startName");
+    const startPr = document.getElementById("startPr");
+    const startDate = document.getElementById("startDate");
+    const setupMessage = document.getElementById("setupMessage");
+    const activeListSelect = document.getElementById("activeListSelect");
+    const editPr = document.getElementById("editPr");
+    const editDate = document.getElementById("editDate");
+    const prMessage = document.getElementById("prMessage");
+    const programEditor = document.getElementById("programEditor");
+    const deleteConfirm = document.getElementById("deleteConfirm");
+    const currentPr = document.getElementById("currentPr");
+    const currentPrDate = document.getElementById("currentPrDate");
+    const currentProgress = document.getElementById("currentProgress");
+    const sessionHeading = document.getElementById("sessionHeading");
+    const sessionCount = document.getElementById("sessionCount");
+    const exerciseList = document.getElementById("exerciseList");
+    const progressList = document.getElementById("progressList");
+
+    function today() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function uid() {
+      return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function loadState() {
+      try {
+        const state = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return normalizeState(state);
+      } catch {
+        return normalizeState(null);
+      }
+    }
+
+    function normalizeState(state) {
+      const activeCycles = Array.isArray(state?.activeCycles) ? state.activeCycles : [];
+      if (state?.activeCycle) {
+        activeCycles.unshift({
+          ...state.activeCycle,
+          name: state.activeCycle.name || "List"
+        });
+      }
+
+      const selectedCycleId = state?.selectedCycleId || activeCycles[0]?.id || null;
+
+      return {
+        activeCycle: null,
+        activeCycles,
+        selectedCycleId,
+        archives: Array.isArray(state?.archives) ? state.archives : [],
+        prHistory: Array.isArray(state?.prHistory) ? state.prHistory : []
+      };
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(`${value}T00:00:00`);
+      return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function sessionLabel(index) {
+      return `Week ${Math.floor(index / 2) + 1} - Session ${(index % 2) + 1}`;
+    }
+
+    function formatSet(item, pr) {
+      const reps = isNaN(item[2]) ? `${item[1]} x ${item[2]}` : `${item[1]} x ${item[2]} reps`;
+
+      if (typeof item[0] === "number") {
+        return `${reps} @ ${Math.round(pr * (item[0] / 100))}kg (${item[0]}%)`;
+      }
+
+      if (typeof item[0] === "string" && item[0].includes("%")) {
+        const pct = parseFloat(item[0]);
+        return `${reps} @ ${Math.round(pr * (pct / 100))}kg (${item[0]})`;
+      }
+
+      return `${reps} @ ${item[0]}`;
+    }
+
+    function normalizePr(value) {
+      const pr = parseFloat(value);
+      return Number.isFinite(pr) && pr > 0 ? pr : null;
+    }
+
+    function archiveActiveCycle(state, status) {
+      const cycle = selectedCycle(state);
+      if (!cycle) return;
+
+      state.archives.unshift({
+        ...cycle,
+        status,
+        archivedAt: today(),
+        completedCount: cycle.completedSessions.length
+      });
+      removeSelectedCycle(state);
+    }
+
+    function selectedCycle(state) {
+      return state.activeCycles.find((cycle) => cycle.id === state.selectedCycleId) || state.activeCycles[0] || null;
+    }
+
+    function removeSelectedCycle(state) {
+      const cycle = selectedCycle(state);
+      if (!cycle) return;
+
+      state.activeCycles = state.activeCycles.filter((entry) => entry.id !== cycle.id);
+      state.selectedCycleId = state.activeCycles[0]?.id || null;
+    }
+
+    function render() {
+      const state = loadState();
+      startDate.value = startDate.value || today();
+
+      if (state.activeCycles.length === 0) {
+        setupPanel.classList.remove("hidden");
+        activePanel.classList.add("hidden");
         return;
       }
 
-      output.innerHTML = "";
+      const cycle = selectedCycle(state);
+      setupPanel.classList.add("hidden");
+      activePanel.classList.remove("hidden");
+      deleteConfirm.classList.add("hidden");
+      renderListSwitcher(state, cycle);
 
-      for (let week = 0; week < 6; week++) {
-        for (let session = 0; session < 2; session++) {
-          const sessionDiv = document.createElement("div");
-          sessionDiv.className = "session-block";
+      currentPr.textContent = `PR ${cycle.pr}kg`;
+      currentPrDate.textContent = `Started ${formatDate(cycle.prDate)}`;
+      currentProgress.textContent = cycle.currentSessionIndex >= TOTAL_SESSIONS
+        ? "Complete"
+        : `Session ${cycle.currentSessionIndex + 1}/${TOTAL_SESSIONS}`;
+      editPr.value = cycle.pr;
+      editDate.value = cycle.prDate;
 
-          const title = document.createElement("h2");
-          title.textContent = `Week ${week + 1} - Session ${session + 1}`;
-          sessionDiv.appendChild(title);
+      renderSession(cycle);
+      renderProgress(cycle);
+    }
 
-          const sessionPlan = plan[week * 2 + session];
-          sessionPlan.forEach(ex => {
-            const name = ex[0];
-            const sets = ex.slice(1).map(item => {
-              const isRepsText = isNaN(item[2]);
-              const reps = isRepsText ? `${item[1]}x ${item[2]}` : `${item[1]}x ${item[2]} reps`;
+    function renderListSwitcher(state, cycle) {
+      activeListSelect.innerHTML = "";
 
-              if (typeof item[0] === "number") {
-                return `${reps} @ ${Math.round(pr * (item[0] / 100))}kg (${item[0]}%)`;
-              } else if (typeof item[0] === "string" && item[0].includes("%")) {
-                const pct = parseFloat(item[0]);
-                return `${reps} @ ${Math.round(pr * (pct / 100))}kg (${item[0]})`;
-              } else {
-                return `${reps} @ ${item[0]}`;
-              }
-            }).join("\n");
+      state.activeCycles.forEach((entry) => {
+        const option = document.createElement("option");
+        option.value = entry.id;
+        option.textContent = entry.name || "List";
+        option.selected = entry.id === cycle.id;
+        activeListSelect.appendChild(option);
+      });
+    }
 
-            const exBlock = document.createElement("pre");
-            exBlock.textContent = `- ${name}\n${sets}`;
-            sessionDiv.appendChild(exBlock);
-          });
+    function renderSession(cycle) {
+      exerciseList.innerHTML = "";
 
-          output.appendChild(sessionDiv);
-        }
+      if (cycle.currentSessionIndex >= TOTAL_SESSIONS) {
+        sessionHeading.textContent = "List Complete";
+        sessionCount.textContent = "12/12";
+        exerciseList.innerHTML = "<p class='muted'>All sessions are done. Start a new cycle when you are ready.</p>";
+        return;
       }
+
+      const index = cycle.currentSessionIndex;
+      sessionHeading.textContent = sessionLabel(index);
+      sessionCount.textContent = `${index + 1}/${TOTAL_SESSIONS}`;
+
+      plan[index].forEach((exercise) => {
+        const block = document.createElement("article");
+        block.className = "exercise";
+
+        const title = document.createElement("strong");
+        title.textContent = exercise[0];
+        block.appendChild(title);
+
+        const sets = document.createElement("div");
+        sets.className = "set-lines";
+        exercise.slice(1).forEach((item) => {
+          const line = document.createElement("span");
+          line.textContent = formatSet(item, cycle.pr);
+          sets.appendChild(line);
+        });
+
+        block.appendChild(sets);
+        exerciseList.appendChild(block);
+      });
+    }
+
+    function renderProgress(cycle) {
+      progressList.innerHTML = "";
+
+      for (let i = 0; i < TOTAL_SESSIONS; i++) {
+        const completed = cycle.completedSessions.find((entry) => entry.sessionIndex === i);
+        const item = document.createElement("details");
+        item.className = completed ? "progress-item done" : "progress-item";
+
+        const summary = document.createElement("summary");
+        const main = document.createElement("div");
+        main.className = "progress-main";
+
+        const name = document.createElement("span");
+        name.textContent = sessionLabel(i);
+
+        const date = document.createElement("span");
+        date.textContent = completed ? formatDate(completed.completedAt) : i === cycle.currentSessionIndex ? "Next" : "Open";
+
+        main.append(name, date);
+        summary.appendChild(main);
+        item.appendChild(summary);
+        item.appendChild(sessionDetail(i, cycle.pr));
+
+        progressList.appendChild(item);
+      }
+    }
+
+    function sessionDetail(index, pr) {
+      const detail = document.createElement("div");
+      detail.className = "progress-detail";
+
+      plan[index].forEach((exercise) => {
+        const block = document.createElement("div");
+        block.className = "progress-exercise";
+
+        const title = document.createElement("strong");
+        title.textContent = exercise[0];
+        block.appendChild(title);
+
+        exercise.slice(1).forEach((item) => {
+          const line = document.createElement("div");
+          line.textContent = formatSet(item, pr);
+          block.appendChild(line);
+        });
+
+        detail.appendChild(block);
+      });
+
+      return detail;
+    }
+
+    document.getElementById("startCycleBtn").addEventListener("click", () => {
+      const pr = normalizePr(startPr.value);
+      if (!pr) {
+        setupMessage.textContent = "Enter a valid PR.";
+        return;
+      }
+
+      const state = loadState();
+
+      const cycle = {
+        id: uid(),
+        name: startName.value.trim() || "List",
+        pr,
+        prDate: startDate.value || today(),
+        startedAt: today(),
+        currentSessionIndex: 0,
+        completedSessions: []
+      };
+
+      state.activeCycles.push(cycle);
+      state.selectedCycleId = cycle.id;
+
+      saveState(state);
+      startName.value = "";
+      startPr.value = "";
+      setupMessage.textContent = "";
+      render();
     });
 
-    backBtn.addEventListener("click", () => {
-      window.location.href = "index.html";
+    document.getElementById("saveProgramBtn").addEventListener("click", () => {
+      const pr = normalizePr(editPr.value);
+      if (!pr) {
+        prMessage.textContent = "Enter a valid PR.";
+        return;
+      }
+
+      const state = loadState();
+      const cycle = selectedCycle(state);
+      if (!cycle) return;
+
+      cycle.pr = pr;
+      cycle.prDate = editDate.value || today();
+
+      saveState(state);
+      prMessage.textContent = "PR saved.";
+      programEditor.classList.add("hidden");
+      render();
     });
+
+    document.getElementById("editProgramToggle").addEventListener("click", () => {
+      programEditor.classList.toggle("hidden");
+      prMessage.textContent = "";
+    });
+
+    document.getElementById("cancelProgramBtn").addEventListener("click", () => {
+      const state = loadState();
+      const cycle = selectedCycle(state);
+      if (cycle) {
+        editPr.value = cycle.pr;
+        editDate.value = cycle.prDate;
+      }
+      prMessage.textContent = "";
+      programEditor.classList.add("hidden");
+    });
+
+    document.getElementById("deleteCycleBtn").addEventListener("click", () => {
+      deleteConfirm.classList.remove("hidden");
+    });
+
+    document.getElementById("cancelDeleteBtn").addEventListener("click", () => {
+      deleteConfirm.classList.add("hidden");
+    });
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+      const state = loadState();
+      removeSelectedCycle(state);
+      saveState(state);
+      startPr.value = "";
+      startDate.value = today();
+      setupMessage.textContent = "List deleted.";
+      render();
+    });
+
+    document.getElementById("completeSessionBtn").addEventListener("click", () => {
+      const state = loadState();
+      const cycle = selectedCycle(state);
+      if (!cycle || cycle.currentSessionIndex >= TOTAL_SESSIONS) return;
+
+      cycle.completedSessions.push({
+        sessionIndex: cycle.currentSessionIndex,
+        completedAt: today(),
+        pr: cycle.pr
+      });
+      cycle.currentSessionIndex += 1;
+
+      if (cycle.currentSessionIndex >= TOTAL_SESSIONS) {
+        archiveActiveCycle(state, "completed");
+      }
+
+      saveState(state);
+      prMessage.textContent = "";
+      render();
+    });
+
+    document.getElementById("activeListSelect").addEventListener("change", (event) => {
+      const state = loadState();
+      state.selectedCycleId = event.target.value;
+      saveState(state);
+      programEditor.classList.add("hidden");
+      render();
+    });
+
+    document.getElementById("showNewListBtn").addEventListener("click", () => {
+      setupPanel.classList.toggle("hidden");
+      startDate.value = startDate.value || today();
+      setupMessage.textContent = "";
+    });
+
+    render();
   </script>
 </body>
 </html>
