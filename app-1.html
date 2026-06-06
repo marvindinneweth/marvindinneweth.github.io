@@ -557,7 +557,7 @@
        ["Close Grip Pin Press", [70, 3, "Till Failure"]],
        ["Tricep Pushdown", ["Heavy", 4, 8]]],
 
-      [["Barbell Bench Press", [50, 2, 15], [75, 3, 10], ["75%", 2, "5s down / 3s up"]],
+      [["Barbell Bench Press", [50, 2, 15], [75, 3, 10], ["75%", 2, 6, "5s down / 3s up"]],
        ["Close Grip Bench", [70, 2, 10]],
        ["Cable Flys", ["Moderate", 3, 12]],
        ["Tricep Pushdown", ["Moderate", 3, 12]]],
@@ -566,7 +566,7 @@
        ["Pin Press", [70, 3, "Till Failure"]],
        ["Tricep Pushdown", ["Heavy", 4, 10]]],
 
-      [["Barbell Bench Press", [50, 2, 15], [85, 4, 6], ["75%", 2, "5s down / 3s up"]],
+      [["Barbell Bench Press", [50, 2, 15], [85, 4, 6], ["75%", 2, 6, "5s down / 3s up"]],
        ["Close Grip Bench", [75, 3, "Till Failure"]],
        ["Cable Flys", ["Moderate", 3, 15]],
        ["Tricep Pushdown", ["Moderate", 3, 15]]],
@@ -663,17 +663,18 @@
 
     function formatSet(item, pr) {
       const reps = isNaN(item[2]) ? `${item[1]} x ${item[2]}` : `${item[1]} x ${item[2]} reps`;
+      const note = item[3] ? ` - ${item[3]}` : "";
 
       if (typeof item[0] === "number") {
-        return `${reps} @ ${Math.round(pr * (item[0] / 100))}kg (${item[0]}%)`;
+        return `${reps} @ ${Math.round(pr * (item[0] / 100))}kg (${item[0]}%)${note}`;
       }
 
       if (typeof item[0] === "string" && item[0].includes("%")) {
         const pct = parseFloat(item[0]);
-        return `${reps} @ ${Math.round(pr * (pct / 100))}kg (${item[0]})`;
+        return `${reps} @ ${Math.round(pr * (pct / 100))}kg (${item[0]})${note}`;
       }
 
-      return `${reps} @ ${item[0]}`;
+      return `${reps} @ ${item[0]}${note}`;
     }
 
     function normalizePr(value) {
