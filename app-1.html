@@ -434,6 +434,30 @@
       <p id="setupMessage" class="message"></p>
     </section>
 
+    <section id="completionPanel" class="panel hero-panel hidden">
+      <h2>List Complete</h2>
+      <p id="completionMessage" class="muted"></p>
+      <div class="meta-grid">
+        <div class="meta">
+          <span>List</span>
+          <strong id="completionName">-</strong>
+        </div>
+        <div class="meta">
+          <span>PR</span>
+          <strong id="completionPr">-</strong>
+        </div>
+        <div class="meta">
+          <span>Done</span>
+          <strong id="completionDate">-</strong>
+        </div>
+      </div>
+      <div class="button-row" style="margin-top: 14px;">
+        <button id="viewNextListBtn" class="primary" type="button">View Next List</button>
+        <button id="startAfterCompleteBtn" class="secondary" type="button">Start New List</button>
+      </div>
+      <button id="viewArchiveBtn" class="secondary" type="button" style="width: 100%; margin-top: 10px;">Go to Archive</button>
+    </section>
+
     <section id="activePanel" class="stack hidden">
       <section class="panel">
         <div class="form-grid">
@@ -559,11 +583,16 @@
     ];
 
     const setupPanel = document.getElementById("setupPanel");
+    const completionPanel = document.getElementById("completionPanel");
     const activePanel = document.getElementById("activePanel");
     const startName = document.getElementById("startName");
     const startPr = document.getElementById("startPr");
     const startDate = document.getElementById("startDate");
     const setupMessage = document.getElementById("setupMessage");
+    const completionMessage = document.getElementById("completionMessage");
+    const completionName = document.getElementById("completionName");
+    const completionPr = document.getElementById("completionPr");
+    const completionDate = document.getElementById("completionDate");
     const activeListSelect = document.getElementById("activeListSelect");
     const editPr = document.getElementById("editPr");
     const editDate = document.getElementById("editDate");
@@ -611,7 +640,10 @@
         activeCycles,
         selectedCycleId,
         archives: Array.isArray(state?.archives) ? state.archives : [],
-        prHistory: Array.isArray(state?.prHistory) ? state.prHistory : []
+        prHistory: Array.isArray(state?.prHistory) ? state.prHistory : [],
+        completionNotice: state?.completionNotice && typeof state.completionNotice === "object"
+          ? state.completionNotice
+          : null
       };
     }
 
@@ -651,15 +683,18 @@
 
     function archiveActiveCycle(state, status) {
       const cycle = selectedCycle(state);
-      if (!cycle) return;
+      if (!cycle) return null;
 
-      state.archives.unshift({
+      const archive = {
         ...cycle,
         status,
         archivedAt: today(),
         completedCount: cycle.completedSessions.length
-      });
+      };
+
+      state.archives.unshift(archive);
       removeSelectedCycle(state);
+      return archive;
     }
 
     function selectedCycle(state) {
@@ -678,14 +713,21 @@
       const state = loadState();
       startDate.value = startDate.value || today();
 
+      if (state.completionNotice) {
+        renderCompletion(state);
+        return;
+      }
+
       if (state.activeCycles.length === 0) {
         setupPanel.classList.remove("hidden");
+        completionPanel.classList.add("hidden");
         activePanel.classList.add("hidden");
         return;
       }
 
       const cycle = selectedCycle(state);
       setupPanel.classList.add("hidden");
+      completionPanel.classList.add("hidden");
       activePanel.classList.remove("hidden");
       deleteConfirm.classList.add("hidden");
       renderListSwitcher(state, cycle);
@@ -700,6 +742,19 @@
 
       renderSession(cycle);
       renderProgress(cycle);
+    }
+
+    function renderCompletion(state) {
+      const notice = state.completionNotice;
+      setupPanel.classList.add("hidden");
+      activePanel.classList.add("hidden");
+      completionPanel.classList.remove("hidden");
+
+      completionMessage.textContent = `${notice.name || "List"} is archived with ${notice.completedCount || TOTAL_SESSIONS}/${TOTAL_SESSIONS} sessions done.`;
+      completionName.textContent = notice.name || "List";
+      completionPr.textContent = `${notice.pr}kg`;
+      completionDate.textContent = formatDate(notice.archivedAt);
+      document.getElementById("viewNextListBtn").textContent = state.activeCycles.length ? "View Next List" : "Done";
     }
 
     function renderListSwitcher(state, cycle) {
@@ -821,6 +876,7 @@
 
       state.activeCycles.push(cycle);
       state.selectedCycleId = cycle.id;
+      state.completionNotice = null;
 
       saveState(state);
       startName.value = "";
@@ -896,7 +952,7 @@
       cycle.currentSessionIndex += 1;
 
       if (cycle.currentSessionIndex >= TOTAL_SESSIONS) {
-        archiveActiveCycle(state, "completed");
+        state.completionNotice = archiveActiveCycle(state, "completed");
       }
 
       saveState(state);
@@ -916,6 +972,29 @@
       setupPanel.classList.toggle("hidden");
       startDate.value = startDate.value || today();
       setupMessage.textContent = "";
+    });
+
+    document.getElementById("viewNextListBtn").addEventListener("click", () => {
+      const state = loadState();
+      state.completionNotice = null;
+      saveState(state);
+      render();
+    });
+
+    document.getElementById("startAfterCompleteBtn").addEventListener("click", () => {
+      const state = loadState();
+      state.completionNotice = null;
+      saveState(state);
+      render();
+      setupPanel.classList.remove("hidden");
+      setupMessage.textContent = "";
+    });
+
+    document.getElementById("viewArchiveBtn").addEventListener("click", () => {
+      const state = loadState();
+      state.completionNotice = null;
+      saveState(state);
+      window.location.href = "app-2.html";
     });
 
     render();
