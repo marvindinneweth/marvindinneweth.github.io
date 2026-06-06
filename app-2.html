@@ -276,6 +276,10 @@
         <h2>Add PR</h2>
         <div class="form-grid">
           <div>
+            <label for="recordName">PR name</label>
+            <input id="recordName" type="text" placeholder="Freddy" />
+          </div>
+          <div>
             <label for="recordPr">Bench PR (kg)</label>
             <input id="recordPr" type="number" min="1" step="0.5" inputmode="decimal" placeholder="100" />
           </div>
@@ -322,6 +326,7 @@
     const area = document.getElementById("outputArea");
     const prHistory = document.getElementById("prHistory");
     const cycleArchive = document.getElementById("cycleArchive");
+    const recordName = document.getElementById("recordName");
     const recordPr = document.getElementById("recordPr");
     const recordDate = document.getElementById("recordDate");
     const recordMessage = document.getElementById("recordMessage");
@@ -400,7 +405,7 @@
         state.prHistory.forEach((entry) => {
           prHistory.appendChild(prHistoryItem(
             entry,
-            `${entry.pr}kg`,
+            `${entry.name || "PR"} - ${entry.pr}kg`,
             `PR date: ${formatDate(entry.date)}`,
             `Recorded: ${formatDate(entry.recordedAt)}`
           ));
@@ -421,29 +426,13 @@
       }
 
       state.activeCycles.forEach((cycle) => {
-        cycleArchive.appendChild(historyItem(
+        cycleArchive.appendChild(activeHistoryItem(
+          cycle,
           `${cycle.name || "List"} - active`,
           `${cycle.currentSessionIndex}/12 sessions done at ${cycle.pr}kg`,
           `Started: ${formatDate(cycle.startedAt)}`
         ));
       });
-    }
-
-    function historyItem(title, lineOne, lineTwo) {
-      const item = document.createElement("article");
-      item.className = "history-item";
-
-      const strong = document.createElement("strong");
-      strong.textContent = title;
-
-      const first = document.createElement("span");
-      first.textContent = lineOne;
-
-      const second = document.createElement("span");
-      second.textContent = lineTwo;
-
-      item.append(strong, first, second);
-      return item;
     }
 
     function prHistoryItem(entry, title, lineOne, lineTwo) {
@@ -452,6 +441,10 @@
 
     function archiveHistoryItem(entry, title, lineOne, lineTwo) {
       return deletableHistoryItem(title, lineOne, lineTwo, () => deleteArchiveRecord(entry.id));
+    }
+
+    function activeHistoryItem(entry, title, lineOne, lineTwo) {
+      return deletableHistoryItem(title, lineOne, lineTwo, () => deleteActiveCycleRecord(entry.id));
     }
 
     function deletableHistoryItem(title, lineOne, lineTwo, onDelete) {
@@ -525,6 +518,17 @@
       renderOverview();
     }
 
+    function deleteActiveCycleRecord(id) {
+      const state = loadState();
+      state.activeCycles = state.activeCycles.filter((entry) => entry.id !== id);
+      if (state.selectedCycleId === id) {
+        state.selectedCycleId = state.activeCycles[0]?.id || null;
+      }
+      saveState(state);
+      recordMessage.textContent = "Active list deleted.";
+      renderOverview();
+    }
+
     button.addEventListener("click", () => {
       const pr = parseFloat(input.value);
       if (isNaN(pr) || pr <= 0) {
@@ -558,12 +562,14 @@
       state.prHistory.unshift({
         id: uid(),
         cycleId: selected?.id || null,
+        name: recordName.value.trim() || "PR",
         pr,
         date: recordDate.value || today(),
         recordedAt: today()
       });
 
       saveState(state);
+      recordName.value = "";
       recordPr.value = "";
       recordDate.value = today();
       recordMessage.textContent = "PR record added.";
